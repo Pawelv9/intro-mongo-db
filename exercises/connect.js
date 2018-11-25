@@ -1,6 +1,15 @@
 const mongoose = require('mongoose')
 mongoose.Promise = global.Promise
 
-const connect = (url) => Promise.reject()
+let url = "mongodb://localhost:27017/intro-to-mongodb";
 
-module.exports = connect
+const connect = (url) =>
+  mongoose.connect(url);
+mongoose.connection
+  .once('open', () => { 
+    console.log('CONNECTED') })
+  .on('error', (error) => {
+    console.warn('Warning', error);
+  })
+
+module.exports = connect()
