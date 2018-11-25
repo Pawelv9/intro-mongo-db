@@ -5,7 +5,7 @@ const getUserById = (id) => {
 }
 
 const getAllUsers = () => {
-  return User.find({})
+  return User.find({}).exec()
 }
 
 const createUser = (userDetails) => {
