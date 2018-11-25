@@ -13,4 +13,4 @@ const connect = url =>
 //     console.warn('Warning', error);
 //   })
 
-module.exports = connect()
+module.exports = connect
