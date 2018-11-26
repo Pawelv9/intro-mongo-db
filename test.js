@@ -1,43 +1,53 @@
 const mongoose = require('mongoose')
+const express = require('express')
+const morgan = require('morgan')
+const {urlencoded, json} = require('body-parser')
+const noteSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        require: true,
+        unique: true
+    },
+    body: {
+        type: String,
+        minlength: 10
+    }
+})
+
+const Note = mongoose.model('note', noteSchema)
+
+const app = express()
+
+app.use(morgan('dev'))
+app.use(urlencoded({extended:true}))
+app.use(json())
+
+
+app.get('/note', async (req, res) => {
+    const notes = await Note.find({})
+    .lean()
+    .exec()
+    res.status(200).json(notes)
+    // for pagination
+    // .sort()
+    // .skip()
+    // .limit()
+    // .exec()
+})
+
+app.post('/note', async (req, res) => {
+    const noteTobeCreated = res.body
+    const note = await Note.create(noteTobeCreated)
+    res.status(201).json(note.toJSON())
+})
 
 const connect = () => {
     return mongoose.connect("mongodb://localhost:27017/intro-to-mongodb");
 }
 
-const school = new mongoose.Schema({
-    district {
-        type: mongoose.Schema.Types.ObjectId
-        ref: 'district'
-    },
-    name: {
-        type: String,
-        unique: false  
-    },
-    openSince: Number,
-    students: Number,
-    isGreat: Boolean,
-    staff: [{ type: String }]
-})
-
-school.index({
-    district: 1,
-    name: 1
-}, {unique: true})
-
-school.virtual('staffCount')
-    .get(function() {
-        console.log('in virtual')
-        return this.staff.length
-    })
-
-const School = mongoose.model('school', school)
 
 connect()
     .then(async connection => {
-        const mySchool = await School.create({
-            name: 'my school',
-            staff: ['v', 't', 'y']
-        })
-        console.log(mySchool.staffCount)
+        app.listen(5000)
     })
     .catch(e => console.error(e))
