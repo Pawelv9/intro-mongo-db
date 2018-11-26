@@ -26,7 +26,7 @@ const postSchema = new mongoose.Schema({
     ref: 'author'
   },
   similarPosts: [{
-    type: mongoose.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'post'
   }]
 }, {timestamps: true})
